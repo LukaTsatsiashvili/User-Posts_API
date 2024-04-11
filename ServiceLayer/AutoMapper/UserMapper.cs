@@ -8,6 +8,7 @@ namespace ServiceLayer.AutoMapper
     {
         public UserMapper()
         {
+            CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<User, UserListDTO>().ReverseMap();
             CreateMap<User, UserCreateDTO>().ReverseMap();
             CreateMap<User, UserUpdateDTO>().ReverseMap();

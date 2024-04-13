@@ -25,13 +25,13 @@ namespace ServiceLayer.Services.Concrete
 
         public async Task<List<UserListDTO>> GetAllUserAsync()
         {
-            var aboutListDto = await _repository.GetAllEntity().ProjectTo<UserListDTO>
+            var userListDto = await _repository.GetAllEntity().ProjectTo<UserListDTO>
                 (_mapper.ConfigurationProvider).ToListAsync();
 
-            return aboutListDto;
+            return userListDto;
         }
 
-        public async Task<UserListDTO> GetUser(Guid id)
+        public async Task<UserListDTO> GetSingleUserAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
@@ -52,7 +52,7 @@ namespace ServiceLayer.Services.Concrete
             return user;
         }
 
-        public async Task<UserDTO> CreateUser(UserCreateDTO model)
+        public async Task<UserDTO> CreateUserAsync(UserCreateDTO model)
         {
             var user = _mapper.Map<User>(model);
 
@@ -63,7 +63,7 @@ namespace ServiceLayer.Services.Concrete
             return userDto;
         }
 
-        public async Task<UserDTO> UpdateUser(Guid id, UserUpdateDTO model)
+        public async Task<UserDTO> UpdateUserAsync(Guid id, UserUpdateDTO model)
         {
             if (id == Guid.Empty)
             {
@@ -91,6 +91,21 @@ namespace ServiceLayer.Services.Concrete
             var result = _mapper.Map<UserDTO>(existingUser);
 
             return result;
+        }
+
+        public async Task<bool> RemoveUserAsync(Guid id)
+        {
+            var user = await _repository.GetEntityByIdAsync(id);
+
+            if (user == null || id == Guid.Empty)
+            {
+                return false;
+            }
+
+            _repository.DeleteEntity(user);
+            await _unitOfWork.SaveAsync();
+
+            return true;
         }
     }
 }

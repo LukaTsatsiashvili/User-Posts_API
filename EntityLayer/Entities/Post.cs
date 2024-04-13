@@ -11,6 +11,12 @@
         public User Author { get; set; }
 
         public List<Comment>? Comments { get; set; }
-        
+
+        // Help of constructor when we create new Post, PublishedAt property will be created automatically  
+        public Post()
+        {
+            PublishedAt = DateTime.Now.ToString("dd/MM/yyyy");
+        }
+
     }
 }

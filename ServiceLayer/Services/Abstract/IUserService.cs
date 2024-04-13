@@ -5,8 +5,9 @@ namespace ServiceLayer.Services.Abstract
     public interface IUserService
     {
         Task<List<UserListDTO>> GetAllUserAsync();
-        Task<UserListDTO> GetUser(Guid id);
-        Task<UserDTO> CreateUser(UserCreateDTO model);
-        Task<UserDTO> UpdateUser(Guid id, UserUpdateDTO model);
+        Task<UserListDTO> GetSingleUserAsync(Guid id);
+        Task<UserDTO> CreateUserAsync(UserCreateDTO model);
+        Task<UserDTO> UpdateUserAsync(Guid id, UserUpdateDTO model);
+        Task<bool> RemoveUserAsync(Guid id);
     }
 }

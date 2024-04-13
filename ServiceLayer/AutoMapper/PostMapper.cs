@@ -8,6 +8,7 @@ namespace ServiceLayer.AutoMapper
     {
         public PostMapper()
         {
+            CreateMap<Post, PostDTO>().ReverseMap();
             CreateMap<Post, PostListDTO>().ReverseMap();
             CreateMap<Post, PostCreateDTO>().ReverseMap();
             CreateMap<Post, PostUpdateDTO>().ReverseMap();

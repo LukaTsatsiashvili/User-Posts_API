@@ -6,7 +6,7 @@ using ServiceLayer.Services.Abstract;
 
 namespace User_Posts_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/UserServices")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -26,9 +26,9 @@ namespace User_Posts_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllUserAsync()
         {
-            var user = await _service.GetAllUserAsync();
+            var result = await _service.GetAllUserAsync();
 
-            return Ok(user);
+            return Ok(result);
         }
 
 
@@ -37,14 +37,14 @@ namespace User_Posts_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingleUser([FromRoute]Guid id)
         {           
-            var user = await _service.GetUser(id);
+            var result = await _service.GetSingleUserAsync(id);
 
-            if (user == null)
+            if (result == null)
             {
-                return NotFound("User with given id does not exist!");
+                return NotFound("Invalid Id!");
             }
             
-            return Ok(user);
+            return Ok(result);
         }
 
 
@@ -60,7 +60,7 @@ namespace User_Posts_API.Controllers
                 return BadRequest();
             }
 
-            var result = await _service.CreateUser(model);
+            var result = await _service.CreateUserAsync(model);
 
             return CreatedAtAction(nameof(GetSingleUser), new { id = result.Id }, result);
         }
@@ -78,13 +78,30 @@ namespace User_Posts_API.Controllers
                 return BadRequest();
             }
 
-            var result = await _service.UpdateUser(id, model);
+            var result = await _service.UpdateUserAsync(id, model);
             if (result == null)
             {
                 return NotFound("User with given id does not exist!");
             }
 
             return Ok("Updated successfuly!");
+        }
+
+
+        [HttpDelete("RemoveUser/{id:Guid}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveUser(Guid id)
+        {
+            var result = await _service.RemoveUserAsync(id);
+
+            if (!result)
+            {
+                return NotFound("Invalid Id!");
+            }
+
+            return Ok();
         }
     }
 }

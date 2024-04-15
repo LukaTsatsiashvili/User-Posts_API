@@ -33,10 +33,6 @@ namespace ServiceLayer.Services.Concrete
 
         public async Task<UserListDTO> GetSingleUserAsync(Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                return null;
-            }
 
             var user = await _repository
                 .Where(x => x.Id == id)
@@ -44,7 +40,7 @@ namespace ServiceLayer.Services.Concrete
                 .ProjectTo<UserListDTO>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
 
-            if (user == null)
+            if (user == null || id == Guid.Empty)
             {
                 return null;
             }

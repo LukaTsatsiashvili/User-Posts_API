@@ -64,5 +64,45 @@ namespace ServiceLayer.Services.Concrete
             return postDto;
         }
 
+        public async Task<PostDTO> UpdatePostAsync(Guid id, PostUpdateDTO model)
+        {
+            if (id == Guid.Empty)
+            {
+                return null;
+            }
+
+            var existingPost = await _repository
+                .Where(x => x.Id == id)
+                .SingleOrDefaultAsync();
+
+            if (existingPost == null)
+            {
+                return null;
+            }
+
+            _mapper.Map(model, existingPost);
+
+            _repository.UpdateEntity(existingPost);
+            await _unitOfWork.SaveAsync();
+
+            var result = _mapper.Map<PostDTO>(existingPost);
+
+            return result;
+        }
+
+        public async Task<bool> RemovePostAsync(Guid id)
+        {
+            var post = await _repository.GetEntityByIdAsync(id);
+            if (post == null || id == Guid.Empty)
+            {
+                return false;
+            }
+
+            _repository.DeleteEntity(post);
+            await _unitOfWork.SaveAsync();
+
+            return true;
+        }
+
     }
 }

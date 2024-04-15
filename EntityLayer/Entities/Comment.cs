@@ -13,5 +13,9 @@
         public Post Post { get; set; }
 
 
+        public Comment()
+        {
+            CreatedTime = DateTime.Now.ToString("dd/MM/yyyy");
+        }
     }
 }

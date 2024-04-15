@@ -8,6 +8,7 @@ namespace ServiceLayer.AutoMapper
     {
         public CommentMapper()
         {
+            CreateMap<Comment, CommentDTO>().ReverseMap();
             CreateMap<Comment, CommentListDTO>().ReverseMap();
             CreateMap<Comment, CommentCreateDTO>().ReverseMap();
             CreateMap<Comment, CommentUpdateDTO>().ReverseMap();

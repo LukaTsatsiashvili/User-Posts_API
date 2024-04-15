@@ -7,5 +7,7 @@ namespace ServiceLayer.Services.Abstract
         Task<List<PostListDTO>> GetAllPostAsync();
         Task<PostListDTO> GetSinglePostAsync(Guid id);
         Task<PostDTO> CreatePostAsync(PostCreateDTO model);
+        Task<PostDTO> UpdatePostAsync(Guid id, PostUpdateDTO model);
+        Task<bool> RemovePostAsync(Guid id);
     }
 }

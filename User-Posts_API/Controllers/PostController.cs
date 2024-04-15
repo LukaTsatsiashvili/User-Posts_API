@@ -65,5 +65,46 @@ namespace User_Posts_API.Controllers
 
             return CreatedAtAction(nameof(GetPost), new { id = result.Id }, result);
         }
+
+
+        [HttpPut("UpdatePost/{id:Guid}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdatePost([FromRoute] Guid id, [FromBody] PostUpdateDTO model)
+        {
+            var validation = await _updateValidator.ValidateAsync(model);
+            if (!validation.IsValid)
+            {
+                validation.AddToModelState(this.ModelState);
+                return BadRequest();
+            }
+
+            var result = await _service.UpdatePostAsync(id, model);
+            if (result == null)
+            {
+                return NotFound("Invalid Id!");
+            }
+
+            return Ok("Updated successfully!");
+        }
+
+
+        [HttpDelete("RemovePost/{id:Guid}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> RemovePost(Guid id)
+        {
+            var result = await _service.RemovePostAsync(id);
+
+            if (!result)
+            {
+                return NotFound("Invalid Id!");
+            }
+
+            return NoContent();
+        }
+
+
     }
 }

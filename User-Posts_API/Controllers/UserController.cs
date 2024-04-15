@@ -24,7 +24,7 @@ namespace User_Posts_API.Controllers
 
         [HttpGet("GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllUserAsync()
+        public async Task<IActionResult> GetAllUser()
         {
             var result = await _service.GetAllUserAsync();
 
@@ -91,7 +91,7 @@ namespace User_Posts_API.Controllers
         [HttpDelete("RemoveUser/{id:Guid}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> RemoveUser(Guid id)
         {
             var result = await _service.RemoveUserAsync(id);
@@ -101,7 +101,7 @@ namespace User_Posts_API.Controllers
                 return NotFound("Invalid Id!");
             }
 
-            return Ok();
+            return NoContent();
         }
     }
 }

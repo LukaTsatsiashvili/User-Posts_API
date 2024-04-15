@@ -24,9 +24,11 @@ namespace User_Posts_API.Controllers
 
         [HttpGet("GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllUser()
+        public async Task<IActionResult> GetAllUser([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
+            [FromQuery] string? sortBy, [FromQuery] bool? isAscending,
+            [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 100)
         {
-            var result = await _service.GetAllUserAsync();
+            var result = await _service.GetAllUserAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
 
             return Ok(result);
         }

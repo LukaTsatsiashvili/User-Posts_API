@@ -23,12 +23,39 @@ namespace ServiceLayer.Services.Concrete
         }
 
 
-        public async Task<List<UserListDTO>> GetAllUserAsync()
+        public async Task<List<UserListDTO>> GetAllUserAsync(string? filterOn = null, string? filterQuery = null,
+            string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 100)
         {
             var userListDto = await _repository.GetAllEntity().ProjectTo<UserListDTO>
                 (_mapper.ConfigurationProvider).ToListAsync();
 
-            return userListDto;
+            // Filtering
+            if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+            {
+                if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    userListDto = userListDto.Where(x => x.Name.ToLower().Contains(filterQuery.ToLower())).ToList();
+                }
+
+                if (filterOn.Equals("Email", StringComparison.OrdinalIgnoreCase))
+                {
+                    userListDto = userListDto.Where(x => x.Email.ToLower().Contains(filterQuery.ToLower())).ToList();
+                }
+            }
+
+            // Sorting
+            if (string.IsNullOrWhiteSpace(sortBy) == false)
+            {
+                if (sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    userListDto = isAscending ? userListDto.OrderBy(x => x.Name).ToList() : userListDto.OrderByDescending(x => x.Name).ToList();
+                }
+            }
+
+            // Pagination
+            var skipResults = (pageNumber - 1) * pageSize;
+
+            return userListDto.Skip(skipResults).Take(pageSize).ToList();
         }
 
         public async Task<UserListDTO> GetSingleUserAsync(Guid id)

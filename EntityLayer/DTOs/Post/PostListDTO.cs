@@ -1,5 +1,4 @@
 ﻿using EntityLayer.DTOs.Comment;
-using EntityLayer.Entities;
 
 namespace EntityLayer.DTOs.Post
 {

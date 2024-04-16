@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using RepositoryLayer.Extensions;
 using ServiceLayer.Extensions;
 
@@ -25,6 +26,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    RequestPath = "/Images"
+});
 
 app.MapControllers();
 

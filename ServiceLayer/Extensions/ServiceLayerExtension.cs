@@ -33,6 +33,8 @@ namespace ServiceLayer.Extensions
                 }
             }
 
+            services.AddHttpContextAccessor();
+
             return services;
         }
     }

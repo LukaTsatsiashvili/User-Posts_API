@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceLayer.FluentValidation.UserValidator;
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-using RepositoryLayer.Context;
+using RepositoryLayer.Context.Identity;
+using ServiceLayer.FluentValidation.API.UserValidator;
 
 namespace ServiceLayer.Extensions
 {

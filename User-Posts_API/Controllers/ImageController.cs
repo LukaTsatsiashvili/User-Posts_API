@@ -2,6 +2,7 @@
 using EntityLayer.DTOs.Image;
 using EntityLayer.Entities;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.FluentValidation.ImageValidator;
@@ -25,6 +26,9 @@ namespace User_Posts_API.Controllers
         }
 
         [HttpPost("UploadImage")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UploadImage([FromForm] ImageUploadDTO model)
@@ -47,6 +51,9 @@ namespace User_Posts_API.Controllers
 
 
         [HttpDelete("RemoveImage/{id:Guid}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> RemoveImage([FromRoute] Guid id)

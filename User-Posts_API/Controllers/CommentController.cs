@@ -1,7 +1,7 @@
 ﻿using EntityLayer.DTOs.Comment;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.Services.Abstract;
 
@@ -25,6 +25,9 @@ namespace User_Posts_API.Controllers
 
 
         [HttpGet("GetAllComments")]
+        [Authorize(Roles = "Member,Admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllComments()
         {
@@ -35,6 +38,9 @@ namespace User_Posts_API.Controllers
 
 
         [HttpGet("GetSingleComment/{id:Guid}")]
+        [Authorize(Roles = "Member,Admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingleComment([FromRoute] Guid id)
@@ -50,6 +56,9 @@ namespace User_Posts_API.Controllers
 
 
         [HttpPost("CreateComment")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateComment([FromBody] CommentCreateDTO model)
@@ -68,6 +77,9 @@ namespace User_Posts_API.Controllers
 
 
         [HttpDelete("RemoveComment/{id:Guid}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

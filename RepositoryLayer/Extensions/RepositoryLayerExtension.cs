@@ -14,6 +14,7 @@ namespace RepositoryLayer.Extensions
         public static IServiceCollection LoadRepositoryLayerExtensions(this IServiceCollection services, IConfiguration config)
         {
             services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(config.GetConnectionString("SqlConnection")));
+            services.AddDbContext<ApplicationAuthDbContext>(opt => opt.UseSqlServer(config.GetConnectionString("AuthConnection")));
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

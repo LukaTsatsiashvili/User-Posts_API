@@ -4,6 +4,7 @@ using ServiceLayer.Extensions;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
+using ServiceLayer.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Global exception handler middleware
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

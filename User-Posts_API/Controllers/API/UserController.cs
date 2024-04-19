@@ -24,7 +24,7 @@ namespace User_Posts_API.Controllers
 
 
         [HttpGet("GetAllUsers")]
-        [Authorize(Roles = "Member,Admin")]
+        //[Authorize(Roles = "Member,Admin")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]

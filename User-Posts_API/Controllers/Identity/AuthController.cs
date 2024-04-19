@@ -31,29 +31,21 @@ namespace User_Posts_API.Controllers.Identity
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Registration([FromBody] RegisterRequestDTO model)
         {
-            try
+            var validation = await _registerValidator.ValidateAsync(model);
+            if (!validation.IsValid)
             {
-                var validation = await _registerValidator.ValidateAsync(model);
-                if (!validation.IsValid)
-                {
-                    validation.AddToModelState(ModelState);
-                    return BadRequest();
-                }
-
-                var result = await _service.RegisterAsync(model);
-                if (result == null)
-                {
-                    _logger.LogError("Registration failed for user{Email}", model.Email);
-                    return BadRequest("Something went wrong. Please try again later!");
-                }
-
-                return Ok("User created successfully!");
+                validation.AddToModelState(ModelState);
+                return BadRequest();
             }
-            catch (Exception ex)
+
+            var result = await _service.RegisterAsync(model);
+            if (result == null)
             {
-                _logger.LogError(ex, "An error occurred during registration for user {Email}", model.Email);
-                return BadRequest("An error occurred. Please try again later.");
+                _logger.LogError("Registration failed for user : {Email}", model.Email);
+                return BadRequest("Something went wrong. Please try again later!");
             }
+
+            return Ok("User created successfully!");
 
         }
 
@@ -63,29 +55,22 @@ namespace User_Posts_API.Controllers.Identity
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> LogIn([FromBody] LogInRequestDTO model)
         {
-            try
-            {
-                var validation = await _logInValidator.ValidateAsync(model);
-                if (!validation.IsValid)
-                {
-                    validation.AddToModelState(ModelState);
-                    return BadRequest();
-                }
 
-                var result = await _service.LogInAsync(model);
-                if (result == null)
-                {
-                    _logger.LogError("Login failed for user {Email}", model.Email);
-                    return BadRequest("Something went wrong. Please try again later!");
-                }
-
-                return Ok(result);
-            }
-            catch (Exception ex)
+            var validation = await _logInValidator.ValidateAsync(model);
+            if (!validation.IsValid)
             {
-                _logger.LogError(ex, "An error occurred during login for user {Email}", model.Email);
-                return BadRequest("An error occurred. Please try again later.");
+                validation.AddToModelState(ModelState);
+                return BadRequest();
             }
+
+            var result = await _service.LogInAsync(model);
+            if (result == null)
+            {
+                _logger.LogError("Login failed for user : {Email}", model.Email);
+                return BadRequest("Something went wrong. Please try again later!");
+            }
+
+            return Ok(result);
         }
     }
 }

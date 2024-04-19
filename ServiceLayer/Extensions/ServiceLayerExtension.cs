@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer.Context.Identity;
 using ServiceLayer.FluentValidation.API.UserValidator;
+using System.Reflection;
+using System.Text;
 
 namespace ServiceLayer.Extensions
 {
@@ -27,6 +27,7 @@ namespace ServiceLayer.Extensions
 
             services.AddValidatorsFromAssemblyContaining<UserCreateValidation>();
 
+            // Adding sevices and interfaces
             var types = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsClass && !x.IsAbstract && x.Name.EndsWith("Service"));
 
             foreach (var serviceType in  types)
@@ -68,6 +69,7 @@ namespace ServiceLayer.Extensions
                     ValidAudience = config["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
                 });
+
 
             return services;
         }

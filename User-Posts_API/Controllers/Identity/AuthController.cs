@@ -15,12 +15,14 @@ namespace User_Posts_API.Controllers.Identity
         private readonly IAuthService _service;
         private readonly RegisterRequestValidator _registerValidator;
         private readonly LogInRequestValidator _logInValidator;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IAuthService service, RegisterRequestValidator registerValidator, LogInRequestValidator logInValidator)
+        public AuthController(IAuthService service, RegisterRequestValidator registerValidator, LogInRequestValidator logInValidator, ILogger<AuthController> logger)
         {
             _service = service;
             _registerValidator = registerValidator;
             _logInValidator = logInValidator;
+            _logger = logger;
         }
 
 
@@ -29,20 +31,30 @@ namespace User_Posts_API.Controllers.Identity
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Registration([FromBody] RegisterRequestDTO model)
         {
-            var validation = await _registerValidator.ValidateAsync(model);
-            if (!validation.IsValid)
+            try
             {
-                validation.AddToModelState(ModelState);
-                return BadRequest();
+                var validation = await _registerValidator.ValidateAsync(model);
+                if (!validation.IsValid)
+                {
+                    validation.AddToModelState(ModelState);
+                    return BadRequest();
+                }
+
+                var result = await _service.RegisterAsync(model);
+                if (result == null)
+                {
+                    _logger.LogError("Registration failed for user{Email}", model.Email);
+                    return BadRequest("Something went wrong. Please try again later!");
+                }
+
+                return Ok("User created successfully!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred during registration for user {Email}", model.Email);
+                return BadRequest("An error occurred. Please try again later.");
             }
 
-            var result = await _service.RegisterAsync(model);
-            if (result == null)
-            {
-                return BadRequest("Something went wrong. Please try again later!");
-            }
-
-            return Ok("User created successfully!");
         }
 
 
@@ -51,20 +63,29 @@ namespace User_Posts_API.Controllers.Identity
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> LogIn([FromBody] LogInRequestDTO model)
         {
-            var validation = await _logInValidator.ValidateAsync(model);
-            if (!validation.IsValid)
+            try
             {
-                validation.AddToModelState(ModelState);
-                return BadRequest();
-            }
+                var validation = await _logInValidator.ValidateAsync(model);
+                if (!validation.IsValid)
+                {
+                    validation.AddToModelState(ModelState);
+                    return BadRequest();
+                }
 
-            var result = await _service.LogInAsync(model);
-            if (result == null)
+                var result = await _service.LogInAsync(model);
+                if (result == null)
+                {
+                    _logger.LogError("Login failed for user {Email}", model.Email);
+                    return BadRequest("Something went wrong. Please try again later!");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
             {
-                return BadRequest("Something went wrong. Please try again later!");
+                _logger.LogError(ex, "An error occurred during login for user {Email}", model.Email);
+                return BadRequest("An error occurred. Please try again later.");
             }
-
-            return Ok(result);
         }
     }
 }

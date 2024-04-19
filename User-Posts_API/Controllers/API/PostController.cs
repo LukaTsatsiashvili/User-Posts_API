@@ -14,12 +14,14 @@ namespace User_Posts_API.Controllers
         private readonly IPostService _service;
         private readonly IValidator<PostCreateDTO> _createValidator;
         private readonly IValidator<PostUpdateDTO> _updateValidator;
+        private readonly ILogger<PostController> _logger;
 
-        public PostController(IPostService service, IValidator<PostCreateDTO> createValidator, IValidator<PostUpdateDTO> updateValidator)
+        public PostController(IPostService service, IValidator<PostCreateDTO> createValidator, IValidator<PostUpdateDTO> updateValidator, ILogger<PostController> logger)
         {
             _service = service;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
+            _logger = logger;
         }
 
 
@@ -31,9 +33,19 @@ namespace User_Posts_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllPosts()
         {
-            var result = await _service.GetAllPostAsync();
+            try
+            {
+                var result = await _service.GetAllPostAsync();
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return BadRequest("Oops! Something went wrong. Please try again later!");
+            }
+
         }
 
 
